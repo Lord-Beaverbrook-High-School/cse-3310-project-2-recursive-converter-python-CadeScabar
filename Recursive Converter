@@ -1,0 +1,79 @@
+# Global Value for converting decimal to binary
+converted = " "
+
+# Table for converting decimals to hexadecimals
+conversion_table = {0: '0', 1: '1', 2: '2', 3: '3',
+                    4: '4', 5: '5', 6: '6', 7: '7',
+                    8: '8', 9: '9', 10: 'A', 11: 'B',
+                    12: 'C', 13: 'D', 14: 'E', 15: 'F'}
+
+# For converting hexadecimals to decimals
+# Got this off of stack overflow, faster than writing the entire conversion table backwards
+reverse_table = {v: k for k, v in conversion_table.items()}
+
+# Methods
+
+# Inputs a number to be converted
+# Repeatedly divides a number by 2 and appends the remainder
+# keeps looping until inputted number is reduced to 1
+# Outputs the final appended binary number
+
+
+def dec_to_bin(num):
+    if num > 1:
+        dec_to_bin(num // 2)
+    global converted
+    converted += str(num % 2)
+
+# Inputs a number to be converted
+# Remainder is num being appended by 16
+# Number is divided by 16 and then added back into the equation
+# The remainder is plugged into the table listed above
+# Outputs the hexadecimal value
+
+
+def dec_to_hexa(num):
+    if num <= 0:
+        return ''
+    remainder = num % 16
+    return dec_to_hexa(num // 16) + conversion_table[remainder]
+
+
+# This method takes a binary number and converts it to a decimal
+# Base case is 0, if a number is equal or less than 0, return 0
+# Else, add the last digit of the number (num % 10) to double of the original number divided by 10
+# This essentially shifts the binary value to the right each loop
+# Outputs the correct decimal value with inputted binary value
+
+
+def bin_to_dec(num):
+    if num == 0:
+        return 0
+    else:
+        return (num % 10) + 2 * bin_to_dec(num // 10)
+
+
+# Takes a hexadecimal and converts it to a decimal value using the reverse conversion table
+# If base is empty, return 0
+# The first character in the string of numbers is converted to uppercase
+# Its decimal value is then extracted from the reverse table
+# Based on the position of the character in the string (len -1), the number is then calculated to the power of 16
+# The function then uses a recursive call to compute the decimal value multiplied by the power of 16 value
+# It then adds this result to the hex_to_dec with the rest of the string (excludes first character)
+# Outputs decimal value
+def hexa_to_dec(num_str):
+    if not num_str:
+        return 0
+    else:
+        value = reverse_table[num_str[0].upper()]
+        power = len(num_str) - 1
+        return (value * (16 ** power)) + hexa_to_dec(num_str[1:])
+
+# Main/Print Code
+
+
+dec_to_bin(23)
+print(converted)
+print(dec_to_hexa(147))
+print(bin_to_dec(1001))
+print(hexa_to_dec("1C2A3"))
